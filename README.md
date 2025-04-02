@@ -36,6 +36,53 @@ This will start:
 - Backend at https://localhost:3001
 - PostgreSQL database at localhost:5432
 
+## Database Migrations
+
+This project uses Prisma ORM for database management. Here's how to work with migrations:
+
+### Initial Setup
+
+1. Generate the initial migration:
+```bash
+npx prisma migrate dev --name init
+```
+
+2. Push the schema to the database:
+```bash
+npx prisma db push
+```
+
+### Working with Migrations
+
+1. After modifying `schema.prisma`, create a new migration:
+```bash
+npx prisma migrate dev --name your_migration_name
+```
+
+2. View the migration status:
+```bash
+npx prisma migrate status
+```
+
+3. Reset the database (caution: this will delete all data):
+```bash
+npx prisma migrate reset
+```
+
+### Prisma Studio
+
+To view and edit your data through a GUI:
+```bash
+npx prisma studio
+```
+This will open Prisma Studio at http://localhost:5555
+
+### Common Prisma Commands
+
+- Generate Prisma Client: `npx prisma generate`
+- Format Schema: `npx prisma format`
+- Validate Schema: `npx prisma validate`
+
 ## Docker Container Management
 
 ### Start PostgreSQL Container

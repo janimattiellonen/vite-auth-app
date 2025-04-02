@@ -1,54 +1,85 @@
-# React + TypeScript + Vite
+# AuthApp
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React application with TypeScript, PostgreSQL, Prisma ORM, and Auth0 authentication.
 
-Currently, two official plugins are available:
+## Prerequisites
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Node.js (v18 or later)
+- Docker and Docker Compose
+- npm or yarn
 
-## Expanding the ESLint configuration
+## Project Setup
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+1. Clone the repository
+2. Install dependencies:
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+3. Copy the example environment file:
+```bash
+cp .env.example .env
 ```
+
+4. Update the `.env` file with your Auth0 credentials (see README-AUTH.md for details)
+
+## Development Server
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+This will start:
+- Frontend at https://localhost:5199
+- Backend at https://localhost:3001
+- PostgreSQL database at localhost:5432
+
+## Docker Container Management
+
+### Start PostgreSQL Container
+
+```bash
+docker-compose up -d
+```
+
+### Stop Container
+
+```bash
+docker-compose down
+```
+
+### Access Container Shell
+
+```bash
+docker exec -it authapp-postgres bash
+```
+
+## Database Access
+
+### Connect to PostgreSQL from Host Machine
+
+```bash
+psql postgresql://authapp:authpass@localhost:5432/authapp
+```
+
+### Connect from Inside Container
+
+```bash
+docker exec -it authapp-postgres psql -U authapp -d authapp
+```
+
+### Useful PostgreSQL Commands
+
+Once connected to psql:
+- List all tables: `\dt`
+- Show table structure: `\d tablename`
+- List all schemas: `\dn`
+- Exit psql: `\q`
+
+## Additional Documentation
+
+- [Auth0 Setup Guide](./README-AUTH.md)
+- [Prisma Documentation](https://www.prisma.io/docs/)
+- [Auth0 Documentation](https://auth0.com/docs/)

@@ -1,38 +1,72 @@
-import { useState, useEffect } from 'react'
+import { Routes, Route } from 'react-router-dom'
+import { useAuth0 } from '@auth0/auth0-react'
+import { LoginButton } from './components/auth/LoginButton'
+import { LogoutButton } from './components/auth/LogoutButton'
+import { ProtectedRoute } from './components/auth/ProtectedRoute'
+import { RegisterForm } from './components/auth/RegisterForm'
 import './App.css'
 
 function App() {
-  const [status, setStatus] = useState<string>('Loading...')
-  const [error, setError] = useState<string>('')
+  const { isAuthenticated, user, isLoading } = useAuth0()
 
-  useEffect(() => {
-    const checkBackend = async () => {
-      try {
-        const response = await fetch('/api/health')
-        const data = await response.json()
-        setStatus(data.status)
-        setError('')
-      } catch (err) {
-        setError('Failed to connect to backend: ' + (err as Error).message)
-      }
-    }
-
-    checkBackend()
-  }, [])
+  if (isLoading) {
+    return (
+      <div className="app">
+        <div className="loading">Loading...</div>
+      </div>
+    )
+  }
 
   return (
     <div className="app">
-      <h1>HTTPS Test</h1>
-      <div className="card">
-        <h2>Backend Status</h2>
-        {error ? (
-          <p style={{ color: 'red' }}>{error}</p>
-        ) : (
-          <p style={{ color: status === 'ok' ? 'green' : 'orange' }}>
-            Status: {status}
-          </p>
-        )}
-      </div>
+      <header>
+        <h1>Auth App</h1>
+        <nav>
+          {!isAuthenticated ? (
+            <div className="auth-buttons">
+              <LoginButton />
+              <button 
+                onClick={() => window.location.href = '/register'} 
+                className="btn-primary"
+              >
+                Register
+              </button>
+            </div>
+          ) : (
+            <div className="user-section">
+              <span>Welcome, {user?.name}</span>
+              <LogoutButton />
+            </div>
+          )}
+        </nav>
+      </header>
+
+      <Routes>
+        <Route path="/" element={
+          <div className="card">
+            <h2>Welcome to Auth App</h2>
+            {!isAuthenticated && (
+              <p>Please log in or register to access protected content</p>
+            )}
+          </div>
+        } />
+        
+        <Route path="/register" element={<RegisterForm />} />
+        
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <div className="card">
+              <h2>Profile</h2>
+              {user && (
+                <div>
+                  <p>Email: {user.email}</p>
+                  <p>Name: {user.name}</p>
+                </div>
+              )}
+            </div>
+          </ProtectedRoute>
+        } />
+      </Routes>
     </div>
   )
 }

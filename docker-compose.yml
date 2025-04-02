@@ -1,0 +1,22 @@
+# docker-compose.yml
+version: '3.8'
+services:
+  postgres:
+    container_name: authapp-postgres
+    image: postgres:15
+    environment:
+      POSTGRES_USER: authapp
+      POSTGRES_PASSWORD: authpass
+      POSTGRES_DB: authapp
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U authapp"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
